@@ -10,6 +10,7 @@ using Android.Gms.Common;
 using Android.Util;
 using Android.Gms.Location;
 using System.Threading.Tasks;
+using Android.Locations;
 
 namespace GuideApp
 {
@@ -18,33 +19,38 @@ namespace GuideApp
     {
         FusedLocationProviderClient fusedLocationProviderClient;
 
-        
+        LocationRequest locationRequest = new LocationRequest()
+                                      .SetPriority(LocationRequest.PriorityHighAccuracy)
+                                      .SetInterval(60 * 1000 * 5)
+                                      .SetFastestInterval(60 * 1000 * 2);
 
         public async void OnMapReady(GoogleMap googleMap)
         {
             async Task GetLastLocationFromDevice()
             {
+                FusedLocationProviderCallback fused = new FusedLocationProviderCallback(this);
+                //Android.Locations.Location location = await fusedLocationProviderClient.RequestLocationUpdatesAsync(locationRequest, fused);
+                //await fusedLocationProviderClient.RequestLocationUpdatesAsync(locationRequest, fused);
+                await fusedLocationProviderClient.RequestLocationUpdatesAsync(locationRequest, fused);
 
-                Android.Locations.Location location = await fusedLocationProviderClient.GetLastLocationAsync();
+                // Do something with the location 
+                //Log.Debug("SampleInMain", "The latitude is " + location.Latitude);
+                //MarkerOptions markerOptions = new MarkerOptions();
+                //markerOptions.SetPosition(fused.ReturnCurrentPosition());
+                //markerOptions.SetTitle("Current Position");
+                //googleMap.AddMarker(markerOptions);
 
 
-                if (location == null)
-                {
-                    // Seldom happens, but should code that handles this scenario
-                }
-                else
-                {
-                    // Do something with the location 
-                    //Log.Debug("Sample", "The latitude is " + location.Latitude);
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.SetPosition(new LatLng(location.Latitude, location.Longitude));
-                    markerOptions.SetTitle("Current Position");
-                    googleMap.AddMarker(markerOptions);                  
-                }
+                //if (location == null)
+                //{
+                //    // Seldom happens, but should code that handles this scenario
+                //}
+                //else
+                //{
+
+                //}
             }
             await GetLastLocationFromDevice();
-
-
         }
 
         protected override void OnCreate(Bundle savedInstanceState)
